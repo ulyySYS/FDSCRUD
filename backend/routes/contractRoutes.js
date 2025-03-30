@@ -42,7 +42,8 @@ router.post('/create-contract', async (req, res) => {
     }
 });
 
-router.get('/buyer/:userID', async (req, res) => {
+// gets all the contracts made by a user
+router.get('/user/:userID', async (req, res) => {
     const { userID } = req.params;
 
     try {
