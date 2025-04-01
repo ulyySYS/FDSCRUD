@@ -4,7 +4,7 @@ const db = require('../config/db');
 const userExists = require("../services/userExists")
 
 router.get('/login', async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.query
     try{
         const [rows] = await db.query(
             'SELECT Count(*) from Users WHERE email = ? AND password = ?',
