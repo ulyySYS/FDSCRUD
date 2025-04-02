@@ -31,6 +31,7 @@
     <input type="text" id="sellerID" placeholder="Seller ID">
     <input type="text" id="address" placeholder="Address">
     <input type="number" id="price" placeholder="Price">
+    <input type="text" id="title" placeholder="Title">
     <select id="status">
       <option value="Available">Available</option>
       <option value="Sold">Sold</option>
@@ -51,6 +52,7 @@
           <th>Status</th>
           <th>Date Posted</th>
           <th>Actions</th>
+          <th>Title</th>
         </tr>
       </thead>
       <tbody id="propertyTable">
@@ -100,13 +102,14 @@
       const price = document.getElementById('price').value;
       const status = document.getElementById('status').value;
       const datePosted = document.getElementById('datePosted').value;
+      const title =document.getElementById('title').value
 
       if (!propertyID || !sellerID || !address || !price || !datePosted) {
         alert("Please fill all fields for property.");
         return;
       }
 
-      const propertyData = { propertyID, sellerID, address, price, status, datePosted };
+      const propertyData = { propertyID, sellerID, address, price, status, datePosted, Title };
 
       fetch('http://localhost:3000/listing-properties/listing-properties/listing', {
         method: 'POST',
@@ -130,12 +133,14 @@
                        <td>${propertyData.price}</td>
                        <td>${propertyData.status}</td>
                        <td>${propertyData.datePosted}</td>
+                       <td>${propertyData.title}</td>
                        <td><button onclick="deleteProperty(this)">Delete</button></td>`;
       document.getElementById('propertyID').value = '';
       document.getElementById('sellerID').value = '';
       document.getElementById('address').value = '';
       document.getElementById('price').value = '';
       document.getElementById('datePosted').value = '';
+      document.getElementById('Title').value = '';
     }
 
     function deleteProperty(btn) {
