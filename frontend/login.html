@@ -1,30 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Management</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 800px; margin: auto; }
+    select, input, button { margin: 5px; padding: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+  </style>
 </head>
 <body>
-    <div class="body-container">
-        <div class="contact-container">
-            <div class="form-container">
-                <div>
-                    <h2>Log in</h2>
-                </div>
-                
-                <form action="#" method="get">
-                    <label for="Email">Email</label>
-                    <input type="text" id="Email" name="Email" class="input-text"required>
-        
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" rows="5" class="input-message" required></textarea>
-        
-                    <button type="submit" class="login-btn">Submit</button>
-                </form>
-            </div>
-            
-        </div>
-    </div>
+  <div class="container">
+    <h2>Real Estate Management</h2>
+
+    <!-- User Type Selection -->
+    <label for="userType">Select User Type:</label>
+    <select id="userType">
+      <option value="buyer">Buyer</option>
+      <option value="seller">Seller</option>
+      <option value="agent">Agent</option>
+    </select>
+
+    <!-- Property Management Section -->
+    <h3>Manage Properties</h3>
+    <input type="text" id="propertyID" placeholder="Property ID">
+    <input type="text" id="sellerID" placeholder="Seller ID">
+    <input type="text" id="address" placeholder="Address">
+    <input type="number" id="price" placeholder="Price">
+    <select id="status">
+      <option value="Available">Available</option>
+      <option value="Sold">Sold</option>
+      <option value="Renting">Renting</option>
+      <option value="Pending">Pending</option>
+    </select>
+    <input type="date" id="datePosted">
+    <button onclick="addProperty()">Add Property</button>
+
+    <!-- Properties Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Property ID</th>
+          <th>Seller ID</th>
+          <th>Address</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Date Posted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="propertyTable">
+        <!-- Dynamic Content Here -->
+      </tbody>
+    </table>
+
+    <!-- User Management Section -->
+    <h3>Manage Users</h3>
+    <input type="text" id="userID" placeholder="User ID">
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="contactNumber" placeholder="Contact Number">
+    <select id="role">
+      <option value="Buyer">Buyer</option>
+      <option value="Seller">Seller</option>
+      <option value="Agent">Agent</option>
+    </select>
+    <input type="date" id="createDate">
+    <button onclick="addUser()">Add User</button>
+
+    <!-- Users Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact Number</th>
+          <th>Role</th>
+          <th>Creation Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTable">
+        <!-- Dynamic Content Here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Add Property: sends a POST request to backend
+    function addProperty() {
+      const propertyID = document.getElementById('propertyID').value;
+      const sellerID = document.getElementById('sellerID').value;
+      const address = document.getElementById('address').value;
+      const price = document.getElementById('price').value;
+      const status = document.getElementById('status').value;
+      const datePosted = document.getElementById('datePosted').value;
+
+      if (!propertyID || !sellerID || !address || !price || !datePosted) {
+        alert("Please fill all fields for property.");
+        return;
+      }
+
+      const propertyData = { propertyID, sellerID, address, price, status, datePosted };
+
+      fetch('http://localhost:3000/listing-properties/listing-properties/listing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(propertyData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        addPropertyToTable(propertyData);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    function addPropertyToTable(propertyData) {
+      const table = document.getElementById('propertyTable');
+      let row = table.insertRow();
+      row.innerHTML = `<td>${propertyData.propertyID}</td>
+                       <td>${propertyData.sellerID}</td>
+                       <td>${propertyData.address}</td>
+                       <td>${propertyData.price}</td>
+                       <td>${propertyData.status}</td>
+                       <td>${propertyData.datePosted}</td>
+                       <td><button onclick="deleteProperty(this)">Delete</button></td>`;
+      document.getElementById('propertyID').value = '';
+      document.getElementById('sellerID').value = '';
+      document.getElementById('address').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('datePosted').value = '';
+    }
+
+    function deleteProperty(btn) {
+      let row = btn.parentNode.parentNode;
+      const propertyID = row.cells[0].innerText;
+      fetch(`http://localhost:3000/listing-properties/listing/${propertyID}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        row.parentNode.removeChild(row);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    // Add User: sends a POST request to backend
+    function addUser() {
+      const userID = document.getElementById('userID').value;
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const contactNumber = document.getElementById('contactNumber').value;
+      const role = document.getElementById('role').value;
+      const createDate = document.getElementById('createDate').value;
+
+      if (!userID || !name || !email || !contactNumber || !createDate) {
+        alert("Please fill all fields for user.");
+        return;
+      }
+
+      const userData = { userID, name, email, contactNumber, role, createDate };
+
+      fetch('http://localhost:3000/user/create-new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        addUserToTable(userData);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    function addUserToTable(userData) {
+      const table = document.getElementById('userTable');
+      let row = table.insertRow();
+      row.innerHTML = `<td>${userData.userID}</td>
+                       <td>${userData.name}</td>
+                       <td>${userData.email}</td>
+                       <td>${userData.contactNumber}</td>
+                       <td>${userData.role}</td>
+                       <td>${userData.createDate}</td>
+                       <td><button onclick="deleteUser(this)">Delete</button></td>`;
+      document.getElementById('userID').value = '';
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('contactNumber').value = '';
+      document.getElementById('createDate').value = '';
+    }
+
+    function deleteUser(btn) {
+      let row = btn.parentNode.parentNode;
+      const userID = row.cells[0].innerText;
+      fetch(`http://localhost:3000/user/delete-user/${userID}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        row.parentNode.removeChild(row);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
 </body>
 </html>
