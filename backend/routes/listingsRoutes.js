@@ -47,6 +47,37 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+router.post('/add-property', async (req, res) => {
+    const {
+        Title,
+        Description,
+        City,
+        Address,
+        Price,
+        Status,
+        NumberOfBedrooms,
+        YearBuilt,
+        PropertyType,
+        SquareFootage,
+        OwnerID
+    } = req.body;
+
+    try {
+        const [result] = await db.query(
+            `INSERT INTO Properties 
+            (Title, Description, City, Address, Price, Status, NumberOfBedrooms, YearBuilt, PropertyType, SquareFootage, OwnerID) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [Title, Description, City, Address, Price, Status, NumberOfBedrooms, YearBuilt, PropertyType, SquareFootage, OwnerID]
+        );
+
+        res.status(201).json({ message: 'Property added successfully', PropertyID: result.insertId });
+    } catch (err) {
+        console.error('Error adding property:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // gets specific properties based on property ID
 router.get('/property/:id', async (req, res) => {
     const { id } = req.params;

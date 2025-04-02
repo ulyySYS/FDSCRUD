@@ -7,6 +7,8 @@ const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express();
 app.use(express.json());
+const cors = require('cors');
+app.use(cors()); 
 
 app.use('/user', userRoutes);
 app.use('/listing-properties', listingsRoutes);
