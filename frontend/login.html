@@ -108,7 +108,7 @@
 
       const propertyData = { propertyID, sellerID, address, price, status, datePosted };
 
-      fetch('http://localhost:3000/listing-properties/listing-properties/listing', {
+      fetch('http://localhost:3000/listing-properties/add-property', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(propertyData)
