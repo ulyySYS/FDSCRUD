@@ -32,14 +32,15 @@ router.post('/create-new', async (req, res) => {
         password,
         contactNumber,
         role,
-        City,
+        city,
     } = req.body
     try{
+        console.log(req.body)
         const exists = await userExists(email);
         if(exists == 0){
             const [rows] = await db.query(
                         `INSERT INTO Users (name, email, password, contactNumber, role, City) VALUES (?, ?, ?, ?, ?, ?)`,
-        [name, email, password, contactNumber, role, City]
+        [name, email, password, contactNumber, role, city]
                     );
 
                     
