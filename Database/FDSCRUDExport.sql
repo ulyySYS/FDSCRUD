@@ -236,7 +236,7 @@ CREATE TABLE `users` (
   `Createdate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `unique_email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,6 +248,37 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'Alice Santos','alice@example.com','pass123','09170000001','Agent','Davao City','2025-03-30 00:49:34'),(2,'Bob Reyes','bob@example.com','pass123','09170000002','Agent','Panabo City','2025-03-30 00:49:34'),(3,'Carla Gomez','carla@example.com','pass123','09170000003','Agent','Davao City','2025-03-30 00:49:34'),(4,'Daniel Cruz','daniel@example.com','pass123','09170000004','Seller','Panabo City','2025-03-30 00:49:34'),(5,'Ella Navarro','ella@example.com','pass123','09170000005','Seller','Davao City','2025-03-30 00:49:34'),(6,'Felix Tan','felix@example.com','pass123','09170000006','Seller','Panabo City','2025-03-30 00:49:34'),(7,'Gina Torres','gina@example.com','pass123','09170000007','Buyer','Davao City','2025-03-30 00:49:34'),(8,'Henry Lim','henry@example.com','pass123','09170000008','Buyer','Panabo City','2025-03-30 00:49:34'),(9,'Isabel Yu','isabel@example.com','pass123','09170000009','Buyer','Davao City','2025-03-30 00:49:34'),(10,'Jake Mendoza','jake@example.com','pass123','09170000010','Buyer','Panabo City','2025-03-30 00:49:34');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `users2`
+--
+
+DROP TABLE IF EXISTS `users2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users2` (
+  `UserID` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `ContactNumber` varchar(20) NOT NULL,
+  `Role` enum('Buyer','Seller','Agent') NOT NULL,
+  `City` text NOT NULL,
+  `Createdate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`UserID`),
+  UNIQUE KEY `Email` (`Email`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users2`
+--
+
+LOCK TABLES `users2` WRITE;
+/*!40000 ALTER TABLE `users2` DISABLE KEYS */;
+INSERT INTO `users2` VALUES (1,'Alice Santos','alice@example.com','pass123','09170000001','Agent','Davao City','2025-04-09 08:37:18'),(2,'Bob Reyes','bob@example.com','pass123','09170000002','Agent','Panabo City','2025-04-09 08:37:18'),(3,'Carla Gomez','carla@example.com','pass123','09170000003','Agent','Davao City','2025-04-09 08:37:18'),(4,'Daniel Cruz','daniel@example.com','pass123','09170000004','Seller','Panabo City','2025-04-09 08:37:18'),(5,'Ella Navarro','ella@example.com','pass123','09170000005','Seller','Davao City','2025-04-09 08:37:18'),(6,'Felix Tan','felix@example.com','pass123','09170000006','Seller','Panabo City','2025-04-09 08:37:18'),(7,'Gina Torres','gina@example.com','pass123','09170000007','Buyer','Davao City','2025-04-09 08:37:18'),(8,'Henry Lim','henry@example.com','pass123','09170000008','Buyer','Panabo City','2025-04-09 08:37:18'),(9,'Isabel Yu','isabel@example.com','pass123','09170000009','Buyer','Davao City','2025-04-09 08:37:18'),(11,'opaw lebronny','jkmamoguis@addu.edu.ph','pass123','091111111111','Buyer','wabad','2025-04-09 08:37:43');
+/*!40000 ALTER TABLE `users2` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -258,4 +289,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-30 17:08:06
+-- Dump completed on 2025-04-09  8:44:37

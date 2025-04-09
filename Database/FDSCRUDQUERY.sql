@@ -12,6 +12,17 @@ CREATE TABLE Users (
     Createdate datetime default current_timestamp
 );
 
+CREATE TABLE Users2 (
+    UserID INT PRIMARY KEY auto_increment,
+    Name VARCHAR(255) not null,
+    Email VARCHAR(255) not null unique,
+    Password varchar(255) not null,
+    ContactNumber VARCHAR(20) not null, 
+    Role ENUM('Buyer', 'Seller', 'Agent') not null,
+    City TEXT not null,
+    Createdate datetime default current_timestamp
+);
+select * from users2;
 CREATE TABLE Properties (
     PropertyID INT PRIMARY KEY auto_increment,
     Title Varchar(255) not null,
@@ -90,8 +101,8 @@ CREATE TABLE ReviewsAndRatings (
     FOREIGN KEY (reviewerID) REFERENCES Users(UserID),
     FOREIGN KEY (PropertyID) REFERENCES Properties(PropertyID)
 );
-
-INSERT INTO Users (Name, Email, Password, ContactNumber, Role, City)
+ALTER TABLE Users2 AUTO_INCREMENT = 1;
+INSERT INTO Users2 (Name, Email, Password, ContactNumber, Role, City)
 VALUES
 ('Alice Santos', 'alice@example.com', 'pass123', '09170000001', 'Agent', 'Davao City'),
 ('Bob Reyes', 'bob@example.com', 'pass123', '09170000002', 'Agent', 'Panabo City'),

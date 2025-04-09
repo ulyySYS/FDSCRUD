@@ -1,115 +1,157 @@
-const express = require('express');
-const app = express();
-const port = 3000;
 
 
-app.use(express.json());
+function populateTable(users) {
+    const tbody = document.querySelector("table tbody");
+    tbody.innerHTML = ""; // Clear existing rows
+
+    users.forEach(user => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${user.UserID}</td>
+            <td>${user.Name}</td>
+            <td>${user.Email}</td>
+            <td>${user.ContactNumber}</td>
+            <td>${user.Role}</td>
+            <td>${user.City}</td>
+            <td>${user.Createdate}</td>
+            <td>
+                <button onclick="updateUser(${user.UserID})" class="Update">Update</button>
+                <button onclick="deleteUser(${user.UserID}, this)" class="Delete">Delete</button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+async function fetchUsers() {
+    try {
+        const response = await fetch('http://localhost:3000/user/all-users');
+        const data = await response.json();
+
+        if (response.status === 200 && data.users) {
+            populateTable(data.users);
+        } else {
+            console.log('No users found');
+        }
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+}
+
+async function deleteUser(userId, button) {
+    try {
+        const response = await fetch(`http://localhost:3000/user/delete-user/${userId}`, {
+            method: 'DELETE',
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200) {
+            // alert(data.message);
+            button.closest('tr').remove(); // Remove row from the table
+            console.log("ok")
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error deleting user:', error);
+    }
+}
+
+function updateUser(userId) {
+    // Find the row in the table
+    const row = [...document.querySelectorAll("table tbody tr")].find(r =>
+        r.children[0].textContent == userId
+    );
+
+    // Fill the update form
+    document.getElementById("updateUserId").value = userId;
+    document.getElementById("updateName").value = row.children[1].textContent;
+    document.getElementById("updateEmail").value = row.children[2].textContent;
+    document.getElementById("updatePassword").value = "pass123"; // you can't prefill password
+    document.getElementById("updateContact").value = row.children[3].textContent;
+    document.getElementById("updateRole").value = row.children[4].textContent;
+    document.getElementById("updateCity").value = row.children[5].textContent;
+
+    document.getElementById("updateForm").style.display = "block";
+}
 
 
 
+document.addEventListener("DOMContentLoaded",  () => {
+    // Function to fetch users from the server
+    fetchUsers();
+});
 
-app.get('/user/login', (req, res) => {
- 
-  res.send({ message: 'User login route' });
+document.getElementById("updateForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const userId = document.getElementById("updateUserId").value;
+    const updatedData = {
+        name: document.getElementById("updateName").value,
+        email: document.getElementById("updateEmail").value,
+        password: document.getElementById("updatePassword").value,
+        contactNumber: document.getElementById("updateContact").value,
+        role: document.getElementById("updateRole").value,
+        City: document.getElementById("updateCity").value
+    };
+
+    try {
+        const response = await fetch(`http://localhost:3000/user/update-user/${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200) {
+            alert(data.message);
+            document.getElementById("updateForm").reset();
+            document.getElementById("updateForm").style.display = "none";
+            fetchUsers(); // Refresh table
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error("Error updating user:", error);
+    }
+});
+
+document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const contactNumber = document.getElementById("contact").value.trim();
+    const role = document.getElementById("role").value;
+    const city = document.getElementById("city").value.trim();
+
+    const user = { name, email, password, contactNumber, role, city };
+
+    try {
+        const response = await fetch("http://localhost:3000/user/create-new", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+
+        const data = await response.json();
+        alert(data.message);
+
+        if (data.message === "Login successful") {
+            fetchUsers(); // refresh the table
+           
+        }
+    } catch (error) {
+        console.error("Error creating user:", error);
+    }
 });
 
 
-app.post('/user/create-new', (req, res) => {
 
-  res.send({ message: 'New user created', data: req.body });
-});
-
-
-app.put('/user/update-user/:id', (req, res) => {
-
-  res.send({ message: 'User updated', id: req.params.id, data: req.body });
-});
-
-
-app.delete('/user/delete-user/:id', (req, res) => {
-
-  res.send({ message: 'User deleted', id: req.params.id });
-});
-
-
-app.get('/user/user-properties/:id', (req, res) => {
-
-  res.send({ message: 'Properties for user', id: req.params.id });
-});
-
-
-
-
-app.get('/listing-properties/', (req, res) => {
-
-  res.send({ message: 'All listing properties' });
-});
-
-
-app.get('/listing-properties/listing-properties/property/:id', (req, res) => {
-
-  res.send({ message: 'Specific property details', id: req.params.id });
-});
-
-
-app.post('/listing-properties/listing-properties/listing', (req, res) => {
-
-  res.send({ message: 'New listing created', data: req.body });
-});
-
-
-app.put('/listing-properties/listing/:id', (req, res) => {
-
-  res.send({ message: 'Listing updated', id: req.params.id, data: req.body });
-});
-
-
-app.delete('/listing-properties/listing/:id', (req, res) => {
-
-  res.send({ message: 'Listing deleted', id: req.params.id });
-});
-
-
-app.post('/contract/create-contract', (req, res) => {
-
-  res.send({ message: 'Contract created', data: req.body });
-});
-
-
-app.get('/contract/user/:userID', (req, res) => {
-
-  res.send({ message: 'Contracts for user', userID: req.params.userID });
-});
-
-
-
-
-app.get('/property/:id', (req, res) => {
-
-  res.send({ message: 'Property details and reviews', id: req.params.id });
-});
-
-// POST: Post review
-app.post('/property/post-review', (req, res) => {
-  // TODO: Add review to property
-  res.send({ message: 'Review posted', data: req.body });
-});
-
-/* ----- Payments Routes ----- */
-
-// POST: Post payment details
-app.post('/payments/', (req, res) => {
-  // TODO: Process payment details
-  res.send({ message: 'Payment processed', data: req.body });
-});
-
-
-app.get('/payments/user/:userID', (req, res) => {
- 
-  res.send({ message: 'Payment history for user', userID: req.params.userID });
-});
-
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});

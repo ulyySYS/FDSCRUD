@@ -25,6 +25,21 @@ router.get('/login', async (req, res) => {
     }
 })
 
+router.get('/all-users', async (req, res) => {
+    try {
+        const [users] = await db.query('SELECT * FROM Users2');
+
+        if (users.length > 0) {
+            res.status(200).json({ message: 'Users fetched successfully', users });
+        } else {
+            res.status(404).json({ message: 'No users found' });
+        }
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 router.post('/create-new', async (req, res) => {
     const { 
         name, 
@@ -32,14 +47,14 @@ router.post('/create-new', async (req, res) => {
         password,
         contactNumber,
         role,
-        city,
+        city
     } = req.body
     try{
         console.log(req.body)
         const exists = await userExists(email);
         if(exists == 0){
             const [rows] = await db.query(
-                        `INSERT INTO Users (name, email, password, contactNumber, role, City) VALUES (?, ?, ?, ?, ?, ?)`,
+                        `INSERT INTO Users2 (name, email, password, contactNumber, role, City) VALUES (?, ?, ?, ?, ?, ?)`,
         [name, email, password, contactNumber, role, city]
                     );
 
@@ -64,7 +79,7 @@ router.put('/update-user/:id', async (req, res) => {
 
     try {
         const [result] = await db.query(
-            `UPDATE Users SET name = ?, email = ?, password = ?, contactNumber = ?, role = ?, City = ? WHERE UserID = ?`,
+            `UPDATE Users2 SET name = ?, email = ?, password = ?, contactNumber = ?, role = ?, City = ? WHERE UserID = ?`,
             [name, email, password, contactNumber, role, City, id]
         );
 
@@ -84,7 +99,7 @@ router.delete('/delete-user/:id', async (req, res) => {
 
     try {
         const [result] = await db.query(
-            `DELETE FROM Users WHERE UserID = ?`,
+            `DELETE FROM Users2 WHERE UserID = ?`,
             [id]
         );
 
