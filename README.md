@@ -1,6 +1,27 @@
-Routes
+
+to use, follow these steps
+
+1. open terminal
+2. make sure the path is towards the project
+3. run -> cd backend
+4. run -> node server.js
+5. go to frontend folder and open index.html
+6. run live server
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+Routes (outdated)
   "/user/login" -> (get) user login
   
   "/user/create-new" ->(post)  create new user
